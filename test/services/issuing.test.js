@@ -53,7 +53,7 @@ test('issuing identify failure', async (t) => {
     },
     payload: JSON.stringify({
       email: "DOESNT.EXIST@example.com",
-      vendorOrganizationId: hyperid()«
+      vendorOrganizationId: hyperid()
     })
   })
 
