@@ -47,6 +47,7 @@ profile-*
 
 # webstorm
 .idea
+*.iml
 
 # vscode
 .vscode
