@@ -2,8 +2,35 @@ const _ = require("lodash/fp")
 const hyperid = require("hyperid")();
 
 const users = Object.freeze({
-  [hyperid()]: { email: "adam.smith@example.com" },
-  [hyperid()]: { email: "olivia.hafez@example.com", hashedPhone:"mDlNtQd87QNA+6tvwC+E6kVaxjc9m136YjDcrUGl8Uk=" }
+  "1": {
+    email: "adam.smith@example.com",
+    currentRole: {
+      company: {did: 'did:eth:acme', name: 'ACME Corp'},
+      title: 'CEO',
+      startDate: {month: 1, year: 2015},
+      office: {country: 'US', state: 'CA'}
+    },
+    priorRoles: [
+      {
+        company: {did: 'did:eth:acme', name: 'ACME Corp'},
+        title: 'Head of Product',
+        startDate: {month: 1, year: 2005},
+        endDate: {month: 12, year: 2014},
+        office: {country: 'US', state: 'CA'}
+      }
+    ]
+  },
+  "2": {
+    email: "olivia.hafez@example.com",
+    hashedPhone: "mDlNtQd87QNA+6tvwC+E6kVaxjc9m136YjDcrUGl8Uk=",
+    currentRole: {
+      company: {did: 'did:eth:acme', name: 'ACME Corp'},
+      title: 'Senior Engineer',
+      startDate: {month: 1, year: 2018},
+      office: {country: 'US', state: 'CA'}
+    },
+    priorRoles: []
+  }
 });
 
 function findUser(matcher) {
@@ -25,11 +52,15 @@ function findUser(matcher) {
 
 
 function findByEmail(email) {
-  return findUser({ email })
+  return findUser({email})
 }
 
 function findByHashedPhone(hashedPhone) {
-  return findUser({ hashedPhone })
+  return findUser({hashedPhone})
 }
 
-module.exports = { findByEmail, findByHashedPhone };
+function findById(userId) {
+  return users[userId];
+}
+
+module.exports = {findByEmail, findByHashedPhone, findById};
