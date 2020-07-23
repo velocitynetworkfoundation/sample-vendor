@@ -1,5 +1,6 @@
 'use strict'
 
+const hyperid = require('hyperid')();
 const { test } = require('tap')
 const { build } = require('../helper')
 
@@ -13,7 +14,8 @@ test('issuing identify success using email', async (t) => {
       "Content-type": "application/json"
     },
     payload: JSON.stringify({
-      email: "adam.smith@example.com"
+      email: "adam.smith@example.com",
+      vendorOrganizationId: hyperid()
     })
   })
 
@@ -31,7 +33,8 @@ test('issuing identify success using hashed phone', async (t) => {
       "Content-type": "application/json"
     },
     payload: JSON.stringify({
-      phone: "+447963587331"
+      phone: "+447963587331",
+      vendorOrganizationId: hyperid()
     })
   })
 
@@ -49,7 +52,8 @@ test('issuing identify failure', async (t) => {
       "Content-type": "application/json"
     },
     payload: JSON.stringify({
-      email: "DOESNT.EXIST@example.com"
+      email: "DOESNT.EXIST@example.com",
+      vendorOrganizationId: hyperid()«
     })
   })
 

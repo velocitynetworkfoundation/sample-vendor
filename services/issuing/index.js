@@ -1,7 +1,7 @@
 const newError = require("http-errors");
-const { createHash } = require('crypto')
-const { findByEmail, findByHashedPhone } = require("./user-queries");
-const { requestSchemas, responseSchemas } = require("./identify-schemas")
+const {createHash} = require('crypto')
+const {findByEmail, findByHashedPhone} = require("./user-queries");
+const {requestSchema, responseSchemas} = require("./identify-schemas")
 const phoneSalt = 'E69C43DAE85C4BF7EC69CCD5D7485'; // 256bit salt
 
 function identify(idDocument) {
@@ -17,7 +17,8 @@ function identify(idDocument) {
 
 module.exports = function (fastify, opts, next) {
   fastify.post(
-    '/issuing/identify',
+    '/identify',
+    {schema: {body: requestSchema, responseSchemas}},
     async (request) => {
       const user = await identify(request.body);
       if (user == null) {
