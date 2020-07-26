@@ -4,7 +4,8 @@ const hyperid = require('hyperid')();
 const {test} = require('tap')
 const {build} = require('../helper')
 
-const HYPER_ID = /^[a-z0-9A-Z/+]+$/;
+const DID = /^did:ethr:[a-z0-9A-Z]+$/
+const HYPER_ID = /^[a-z0-9A-Z-_]+$/;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
 test('issuing identify success using email', async (t) => {
@@ -23,7 +24,7 @@ test('issuing identify success using email', async (t) => {
   })
 
   t.equal(res.statusCode, 200)
-  t.match(JSON.parse(res.payload), {vendorUserId: /^[0-9a-zA-Z/+]+$/})
+  t.match(JSON.parse(res.payload), {vendorUserId: HYPER_ID})
 })
 
 test('issuing identify success using hashed phone', async (t) => {
@@ -42,7 +43,7 @@ test('issuing identify success using hashed phone', async (t) => {
   })
 
   t.equal(res.statusCode, 200)
-  t.match(JSON.parse(res.payload), {vendorUserId: /^[0-9a-zA-Z/+]+$/})
+  t.match(JSON.parse(res.payload), {vendorUserId: HYPER_ID})
 })
 
 test('issuing identify failure', async (t) => {
@@ -89,7 +90,7 @@ test('issuing selected offers', async (t) => {
       issuer: { vendorOrganizationId: payload.vendorOrganizationId },
       credentialSubject: {
         vendorUserId: payload.vendorUserId,
-        company: /^did:eth:[a-z0-9]+$/,
+        company: DID,
         companyName: {
           localized: {
             en: "ACME Corp"
@@ -141,7 +142,7 @@ test('issuing all offers', async (t) => {
       issuer: { vendorOrganizationId: payload.vendorOrganizationId },
       credentialSubject: {
         vendorUserId: payload.vendorUserId,
-        company: /^did:eth:[a-z0-9]+$/,
+        company: DID,
         companyName: {
           localized: {
             en: "ACME Corp"
@@ -170,7 +171,7 @@ test('issuing all offers', async (t) => {
         issuer: { vendorOrganizationId: payload.vendorOrganizationId },
         credentialSubject: {
           vendorUserId: payload.vendorUserId,
-          company: /^did:eth:[a-z0-9]+$/,
+          company: DID,
           companyName: {
             localized: {
               en: "ACME Corp"

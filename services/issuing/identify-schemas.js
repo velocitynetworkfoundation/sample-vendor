@@ -7,18 +7,25 @@ const requestSchema = {
     "firstName": {
       "$ref": "multilingual-string#"
     },
+    "middleNames": {
+      "$ref": "multilingual-string#"
+    },
     "lastName": {
       "$ref": "multilingual-string#"
     },
-    "email": {
-      "type": "string",
-      "format": "email"
-    },
-    "phone": {
-      "type": "string"
-    },
     "address": {
       "$ref": "address#"
+    },
+    "dob": {
+      "$ref": "date#"
+    },
+    "emails": {
+      "type": "array",
+      "items": {"type": "string", "format": "email"}
+    },
+    "phones": {
+      "type": "array",
+      "items": {"type": "string"}
     },
     "identityCredentials": {
       "type": "array",
@@ -28,10 +35,6 @@ const requestSchema = {
           "kind": {
             "type": "string",
             "description": "DriversLicense, IdCard, SSN, NI Number, etc"
-          },
-          "identityNumber": {
-            "type": "string",
-            "description": "The id number of the identity credential"
           },
           "authority": {
             "type": "string",
@@ -43,6 +46,25 @@ const requestSchema = {
           },
           "location": {
             "$ref": "location#"
+          },
+          "identityNumber": {
+            "type": "string",
+            "description": "The id number of the identity credential"
+          },
+          "firstName": {
+            "$ref": "multilingual-string#"
+          },
+          "middleNames": {
+            "$ref": "multilingual-string#"
+          },
+          "lastName": {
+            "$ref": "multilingual-string#"
+          },
+          "address": {
+            "$ref": "address#"
+          },
+          "dob": {
+            "$ref": "date#"
           }
         }
       }

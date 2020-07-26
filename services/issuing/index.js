@@ -1,8 +1,8 @@
 const newError = require("http-errors");
 const {createHash} = require('crypto')
-const hyperid = require('hyperid')()
+const hyperid = require('hyperid')({urlSafe: true})
 const {addWeeks} = require('date-fns')
-const {findByEmail, findByHashedPhone, findById} = require("./user-queries");
+const {findByEmail, findByHashedPhone, findById} = require("./user-repo");
 const {requestSchema, responseSchemas} = require("./identify-schemas");
 // const {requestSchema, responseSchemas} = require("./identify-schemas");
 const phoneSalt = 'E69C43DAE85C4BF7EC69CCD5D7485'; // 256bit salt
@@ -103,7 +103,6 @@ function generateEmployeeOffers(
 module.exports = function (fastify, opts, next) {
   fastify.post(
     '/identify',
-    {schema: {body: requestSchema, responseSchemas}},
     async (request) => {
       const user = await identify(request.body);
       if (user == null) {
@@ -115,7 +114,6 @@ module.exports = function (fastify, opts, next) {
 
   fastify.post(
     '/generate-offers',
-    // {schema: {body: requestSchema, responseSchemas}},
     async (request) => {
       const user = await findById(request.body.vendorUserId);
       if (user == null) {
