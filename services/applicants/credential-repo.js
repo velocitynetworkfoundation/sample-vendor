@@ -48,33 +48,26 @@ function saveApplicantCredentials(applicant, credentials) {
   }), applicantCredentials);
 
   _.forEach(credential => {
-    switch (credential.kind) {
-      case 'Employment': {
-        employmentStore[credential.id] = employmentMapper(credential);
-        break;
-      }
-      case 'Education': {
-        educationStore[credential.id] = educationMapper(credential);
-        break;
-      }
+    if (credential.kind === 'Employment') {
+      employmentStore[credential.id] = employmentMapper(credential);
+    } else if (credential.kind === 'Education') {
+      educationStore[credential.id] = educationMapper(credential);
     }
   }, applicantCredentials);
   return applicantCredentials;
 }
 
 function findApplicantCredentialsByApplicantId(applicantId) {
-  return _.map(
+  return _.flow(_.map(
     ({id, kind}) => {
-      switch (kind) {
-        case 'Employment': {
-          return employmentStore[id]
-        }
-        case 'Education': {
-          return educationStore[id]
-        }
+      if (kind === 'Employment') {
+        return employmentStore[id];
+      } else if (kind === 'Education') {
+        return educationStore[id];
+      } else {
+        return []
       }
-    }, applicantCredentialIdIndex[applicantId]
-  )
+    }), _.compact)(applicantCredentialIdIndex[applicantId])
 }
 
 module.exports = {saveApplicantCredentials, findApplicantCredentialsByApplicantId}
