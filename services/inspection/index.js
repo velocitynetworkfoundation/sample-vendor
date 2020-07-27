@@ -1,26 +1,19 @@
-const {insertApplicant, saveApplicantCredentials, findApplicantById, findApplicantByEmail} = require("../applicants/applicant-repo")
-
-function createApplicant({vendorOriginContext, vendorOrganizationId, ...idAndContact}) {
-  const applicant = findApplicantByEmail(idAndContact.email);
-  if (applicant != null) {
-    return applicant;
-  }
-
-  return insertApplicant({
-    givenName: idAndContact.firstName,
-    surname: idAndContact.lastName,
-    email: idAndContact.email
-  })
-}
+const {findOrCreateApplicant, findApplicantById} = require("../applicants/applicant-repo");
+const {saveApplicantCredentials} = require("../applicants/credential-repo");
 
 module.exports = function (fastify, opts, next) {
   fastify.post(
     '/find-or-create-applicant',
     async (req) => {
-      const applicant = createApplicant(req.body);
+      const idAndContact = req.body;
+      const applicant = findOrCreateApplicant(idAndContact.email, {
+        givenName: idAndContact.firstName,
+        surname: idAndContact.lastName,
+        email: idAndContact.email
+      });
       return {vendorApplicantId: applicant.id};
     }
-  )
+  );
 
   fastify.post(
     '/add-credentials-to-applicant',
@@ -29,7 +22,7 @@ module.exports = function (fastify, opts, next) {
       const credentials = saveApplicantCredentials(applicant, req.body.credentials);
       return {numProcessed: credentials.length};
     }
-  )
+  );
 
   next();
 }

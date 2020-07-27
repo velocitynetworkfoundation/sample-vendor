@@ -1,6 +1,7 @@
 const newError = require("http-errors");
 const _ = require('lodash/fp');
-const {findApplicantCredentialsByApplicantId, findApplicantById} = require("../applicants/applicant-repo")
+const {findApplicantById} = require("./applicant-repo");
+const {findApplicantCredentialsByApplicantId} = require("./credential-repo");
 
 module.exports = function (fastify, opts, next) {
   fastify.get(`/:id`, {schema: {params: {id: {type: "string"}}}}, async (req) => {
@@ -14,7 +15,7 @@ module.exports = function (fastify, opts, next) {
       ...applicant,
       credentials: _.map(_.omit(["applicantId"]), credentials)
     };
-  })
+  });
 
   next();
 }

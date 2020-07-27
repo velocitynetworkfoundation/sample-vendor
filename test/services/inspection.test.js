@@ -1,5 +1,5 @@
 'use strict'
-
+const _ = require("lodash/fp");
 const hyperid = require('hyperid')();
 const {test} = require('tap')
 const {build} = require('../helper')
@@ -60,7 +60,6 @@ test(`find applicant test`, async (t) => {
   t.equal(createResponse.statusCode, 200)
   const createJson = JSON.parse(createResponse.payload);
   t.match(createJson, {vendorApplicantId: HYPER_ID});
-  console.info(JSON.stringify(createJson))
 
   const findResponse = await app.inject({
     url: '/inspection/find-or-create-applicant',
@@ -73,19 +72,27 @@ test(`find applicant test`, async (t) => {
 
   t.equal(findResponse.statusCode, 200)
   const findJson = JSON.parse(findResponse.payload);
-  console.info(JSON.stringify(findJson))
   t.same(findJson, createJson);
 })
 
 
 test(`create applicant & attach credentials test test`, async (t) => {
   const credentials = [{
-    company: {did: 'did:ethr:acme', name: 'ACME Corp'},
-    title: 'Head of Product',
-    startDate: {month: 1, year: 2005},
-    endDate: {month: 12, year: 2014},
-    office: {country: 'US', state: 'CA'},
-    checks: [{kind: 'ISSUER_CHAIN', value: 'PASS'}]
+    type: ["PreviousEmploymentPosition"],
+    issuer: {
+      id: 'did.ethr.acme'
+    },
+    credentialSubject: {
+      company: 'did:ethr:acme',
+      companyName: {localized: {en: 'ACME Corp'}},
+      title: {localized: {en: 'Head of Product'}},
+      startMonthYear: {month: 1, year: 2005},
+      endMonthYear: {month: 12, year: 2014},
+      office: {country: 'US', state: 'CA'},
+    },
+    issuanceDate: "2020-06-30T07:20:03Z",
+    id: "did:ethr:0xf12378ae3424c23b13983214",
+    credentialChecks: [{kind: 'ISSUER_CHAIN', value: 'PASS'}]
   }];
   const app = build(t)
 
@@ -121,6 +128,10 @@ test(`create applicant & attach credentials test test`, async (t) => {
     givenName: newApplicant.firstName,
     surname: newApplicant.lastName,
     email: newApplicant.email,
-    credentials: credentials.map(credential => ({id: HYPER_ID, ...credential}))
+    credentials: [{
+      id: HYPER_ID,
+      companyName: _.first(credentials).credentialSubject.companyName.localized.en,
+      position: _.first(credentials).credentialSubject.title.localized.en
+    }]
   })
 })
