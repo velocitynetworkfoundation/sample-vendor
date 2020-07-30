@@ -3,8 +3,6 @@ const {createHash} = require('crypto')
 const hyperid = require('hyperid')({urlSafe: true})
 const {addWeeks} = require('date-fns')
 const {findByEmail, findByHashedPhone, findById} = require("./user-repo");
-const {requestSchema, responseSchemas} = require("./identify-schemas");
-// const {requestSchema, responseSchemas} = require("./identify-schemas");
 const phoneSalt = 'E69C43DAE85C4BF7EC69CCD5D7485'; // 256bit salt
 
 function identify(idDocument) {
@@ -110,7 +108,7 @@ module.exports = function (fastify, opts, next) {
       }
       return {vendorUserId: user.id};
     }
-  )
+  );
 
   fastify.post(
     '/generate-offers',
@@ -123,7 +121,7 @@ module.exports = function (fastify, opts, next) {
       const offers = generateEmployeeOffers(user, request.body);
       return {offers};
     }
-  )
+  );
 
-  next()
+  next();
 }
