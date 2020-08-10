@@ -10,6 +10,8 @@ $ docker-compose pull # get the latest images
 $ docker-compose up
 ```
 
+*This has been tested on Version 19 of docker and 1.26 of docker-compose. Your mileage may vary on other versions.*
+
 ### Using npm
 ```sh
 $ npm install
