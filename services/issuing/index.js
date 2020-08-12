@@ -19,6 +19,7 @@ function identify(idDocument) {
 function generateEmployeeOffers(
   employee,
   {
+    exchangeId,
     vendorUserId,
     vendorOrganizationId,
     type: types = ["CurrentEmploymentPosition", "PastEmploymentPosition"]
@@ -54,7 +55,8 @@ function generateEmployeeOffers(
           },
           offerId: hyperid(),
           offerCreationDate: now,
-          offerExpirationDate: addWeeks(now, 2)
+          offerExpirationDate: addWeeks(now, 2),
+          exchangeId
         }]
       }
       case "PastEmploymentPosition": {
@@ -89,7 +91,8 @@ function generateEmployeeOffers(
           },
           offerId: hyperid(),
           offerCreationDate: now,
-          offerExpirationDate: addWeeks(now, 2)
+          offerExpirationDate: addWeeks(now, 2),
+          exchangeId
         }))
       }
       default:
