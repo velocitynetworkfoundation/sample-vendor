@@ -1,6 +1,6 @@
 # Sample Vendor
 
-Is an example implementation for a Credential Agent for Luther, using fastify v3.
+Is an example implementation of a Vendor Gateway API for a Credential Agent that for the Luther release, using fastify v3.
 
 ## Getting started
 1. Update the secretes in the .env file
