@@ -18,7 +18,7 @@ test('issuing identify success using email', async (t) => {
       "Content-type": "application/json"
     },
     payload: JSON.stringify({
-      email: "adam.smith@example.com",
+      emails: ["adam.smith@example.com"],
       vendorOrganizationId: hyperid()
     })
   })
@@ -37,7 +37,7 @@ test('issuing identify success using hashed phone', async (t) => {
       "Content-type": "application/json"
     },
     payload: JSON.stringify({
-      phone: "+447963587331",
+      phones: ["+447963587331"],
       vendorOrganizationId: hyperid()
     })
   })
