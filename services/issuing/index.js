@@ -1,9 +1,9 @@
-const newError = require("http-errors");
+const newError = require('http-errors');
 const {createHash} = require('crypto')
-const hyperid = require('hyperid')({urlSafe: true})
-const {addWeeks} = require('date-fns')
-const { first } = require('lodash/fp')
-const {findByEmail, findByHashedPhone, findById} = require("./user-repo");
+const { v4: uuidv4 } = require('uuid')
+const {addWeeks} = require('date-fns/fp')
+const {first} = require('lodash/fp')
+const {findByEmail, findByHashedPhone, findById} = require('./user-repo');
 const phoneSalt = 'E69C43DAE85C4BF7EC69CCD5D7485'; // 256bit salt
 
 function identify(idDocument) {
@@ -17,89 +17,95 @@ function identify(idDocument) {
   return null;
 }
 
+function generateOffer({type, exchangeId, vendorOrganizationId, vendorUserId}, content) {
+  const now = new Date();
+  return {
+    type: [type],
+    issuer: {vendorOrganizationId},
+    credentialSubject: {
+      vendorUserId,
+      ...content
+    },
+    offerId: uuidv4(),
+    offerCreationDate: now,
+    offerExpirationDate: addWeeks(2, now),
+    exchangeId
+  };
+}
+
 function generateEmployeeOffers(
   employee,
   {
-    exchangeId,
-    vendorUserId,
-    vendorOrganizationId,
-    type: types = ["CurrentEmploymentPosition", "PastEmploymentPosition"]
+    type: types = ['CurrentEmploymentPosition', 'PastEmploymentPosition'],
+    ...metadata
   }) {
-  const now = new Date();
   return types.flatMap((type) => {
     switch (type) {
-      case "CurrentEmploymentPosition": {
-        return [{
-          type: ["CurrentEmploymentPosition"],
-          issuer: {vendorOrganizationId},
-          credentialSubject: {
-            vendorUserId,
-            company: employee.currentRole.company.did,
-            companyName: {
-              localized: {
-                en: employee.currentRole.company.name
+      case 'CurrentEmploymentPosition': {
+        return [
+          generateOffer(
+            {type, ...metadata},
+            {
+              company: employee.currentRole.company.did,
+              companyName: {
+                localized: {
+                  en: employee.currentRole.company.name
+                }
+              },
+              title: {
+                localized: {
+                  en: employee.currentRole.title
+                }
+              },
+              startMonthYear: {
+                month: employee.currentRole.startDate.month,
+                year: employee.currentRole.startDate.year
+              },
+              location: {
+                countryCode: employee.currentRole.office.country,
+                regionCode: employee.currentRole.office.state
               }
-            },
-            title: {
-              localized: {
-                en: employee.currentRole.title
-              }
-            },
-            startMonthYear: {
-              month: employee.currentRole.startDate.month,
-              year: employee.currentRole.startDate.year
-            },
-            location: {
-              countryCode: employee.currentRole.office.country,
-              regionCode: employee.currentRole.office.state
             }
-          },
-          offerId: hyperid(),
-          offerCreationDate: now,
-          offerExpirationDate: addWeeks(now, 2),
-          exchangeId
-        }]
+          )
+        ]
       }
-      case "PastEmploymentPosition": {
-        return employee.priorRoles.map(role => ({
-          type: ["PastEmploymentPosition"],
-          issuer: {vendorOrganizationId},
-          credentialSubject: {
-            vendorUserId,
-            company: role.company.did,
-            companyName: {
-              localized: {
-                en: role.company.name
-              }
-            },
-            title: {
-              localized: {
-                en: role.title
-              }
-            },
-            startMonthYear: {
-              month: role.startDate.month,
-              year: role.startDate.year
-            },
-            endMonthYear: {
-              month: role.endDate.month,
-              year: role.endDate.year
-            },
-            location: {
-              countryCode: role.office.country,
-              regionCode: role.office.state
-            }
-          },
-          offerId: hyperid(),
-          offerCreationDate: now,
-          offerExpirationDate: addWeeks(now, 2),
-          exchangeId
-        }))
+      case 'PastEmploymentPosition': {
+        return employee.priorRoles
+          .map(role =>
+            generateOffer(
+              {type, ...metadata},
+              {
+                company: role.company.did,
+                companyName: {
+                  localized: {
+                    en: role.company.name
+                  }
+                },
+                title: {
+                  localized: {
+                    en: role.title
+                  }
+                },
+                startMonthYear: {
+                  month: role.startDate.month,
+                  year: role.startDate.year
+                },
+                endMonthYear: {
+                  month: role.endDate.month,
+                  year: role.endDate.year
+                },
+                location: {
+                  countryCode: role.office.country,
+                  regionCode: role.office.state
+                }
+              })
+          )
       }
       default:
         return [];
     }
-  });
+  })
+    ;
 }
 
 module.exports = function (fastify, opts, next) {

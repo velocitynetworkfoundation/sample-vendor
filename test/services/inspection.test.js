@@ -1,18 +1,18 @@
 'use strict'
 const _ = require("lodash/fp");
-const hyperid = require('hyperid')();
+const {v4: uuidv4} = require('uuid');
 const {test} = require('tap')
 const {build} = require('../helper')
 
-const HYPER_ID = /^[a-z0-9A-Z-_]+$/;
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+const UUID_FORMAT = /^[a-z0-9A-Z-_]+$/;
+const ISO_DATE_FORMAT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
 const newApplicant = {
   firstName: 'Adam',
   lastName: "Smith",
   email: "adam.smith@example.com",
   phone: '+972543142123',
-  vendorOrganizationId: hyperid()
+  vendorOrganizationId: uuidv4()
 };
 
 test(`create applicant test`, async (t) => {
@@ -29,7 +29,7 @@ test(`create applicant test`, async (t) => {
 
   t.equal(findOrCreateResponse.statusCode, 200)
   const findOrCreateJson = JSON.parse(findOrCreateResponse.payload);
-  t.match(findOrCreateJson, {vendorApplicantId: HYPER_ID});
+  t.match(findOrCreateJson, {vendorApplicantId: UUID_FORMAT});
 
   const getResponse = await app.inject({
     url: `/applicants/${findOrCreateJson.vendorApplicantId}`,
@@ -59,7 +59,7 @@ test(`find applicant test`, async (t) => {
 
   t.equal(createResponse.statusCode, 200)
   const createJson = JSON.parse(createResponse.payload);
-  t.match(createJson, {vendorApplicantId: HYPER_ID});
+  t.match(createJson, {vendorApplicantId: UUID_FORMAT});
 
   const findResponse = await app.inject({
     url: '/inspection/find-or-create-applicant',
@@ -129,7 +129,7 @@ test(`create applicant & attach credentials test test`, async (t) => {
     surname: newApplicant.lastName,
     email: newApplicant.email,
     credentials: [{
-      id: HYPER_ID,
+      id: UUID_FORMAT,
       companyName: _.first(credentials).credentialSubject.companyName.localized.en,
       position: _.first(credentials).credentialSubject.title.localized.en
     }]

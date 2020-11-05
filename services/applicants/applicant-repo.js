@@ -1,4 +1,4 @@
-const hyperid = require('hyperid')({urlSafe: true});
+const { v4: uuidv4 } = require('uuid');
 const _ = require("lodash/fp");
 
 const applicantsStore = {};
@@ -22,7 +22,7 @@ function findOrCreateApplicant(email, newApplicant) {
 }
 
 function insertApplicant(applicant) {
-  const id = hyperid();
+  const id = uuidv4();
   const createdApplicant = {id, ...applicant};
   applicantsStore[id] = createdApplicant;
   return createdApplicant;

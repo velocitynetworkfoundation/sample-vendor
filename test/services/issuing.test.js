@@ -1,12 +1,12 @@
 'use strict'
 
-const hyperid = require('hyperid')();
+const {v4: uuidv4} = require('uuid');
 const {test} = require('tap')
 const {build} = require('../helper')
 
-const DID = /^did:ethr:[a-z0-9A-Z]+$/
-const HYPER_ID = /^[a-z0-9A-Z-_]+$/;
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+const DID_FORMAT = /^did:ethr:[a-z0-9A-Z]+$/
+const UUID_FORMAT = /^[a-z0-9-_]+$/;
+const ISO_DATE_FORMAT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
 test('issuing identify success using email', async (t) => {
   const app = build(t)
@@ -19,12 +19,12 @@ test('issuing identify success using email', async (t) => {
     },
     payload: JSON.stringify({
       emails: ["adam.smith@example.com"],
-      vendorOrganizationId: hyperid()
+      vendorOrganizationId: uuidv4()
     })
   })
 
   t.equal(res.statusCode, 200)
-  t.match(JSON.parse(res.payload), {vendorUserId: HYPER_ID})
+  t.match(JSON.parse(res.payload), {vendorUserId: UUID_FORMAT})
 })
 
 test('issuing identify success using hashed phone', async (t) => {
@@ -38,12 +38,12 @@ test('issuing identify success using hashed phone', async (t) => {
     },
     payload: JSON.stringify({
       phones: ["+447963587331"],
-      vendorOrganizationId: hyperid()
+      vendorOrganizationId: uuidv4()
     })
   })
 
   t.equal(res.statusCode, 200)
-  t.match(JSON.parse(res.payload), {vendorUserId: HYPER_ID})
+  t.match(JSON.parse(res.payload), {vendorUserId: UUID_FORMAT})
 })
 
 test('issuing identify failure', async (t) => {
@@ -57,7 +57,7 @@ test('issuing identify failure', async (t) => {
     },
     payload: JSON.stringify({
       email: "DOESNT.EXIST@example.com",
-      vendorOrganizationId: hyperid()
+      vendorOrganizationId: uuidv4()
     })
   })
 
@@ -70,7 +70,7 @@ test('issuing selected offers', async (t) => {
 
   const payload = {
     vendorUserId: "1",
-    vendorOrganizationId: hyperid(),
+    vendorOrganizationId: uuidv4(),
     type: ["CurrentEmploymentPosition"]
   };
 
@@ -90,7 +90,7 @@ test('issuing selected offers', async (t) => {
       issuer: { vendorOrganizationId: payload.vendorOrganizationId },
       credentialSubject: {
         vendorUserId: payload.vendorUserId,
-        company: DID,
+        company: DID_FORMAT,
         companyName: {
           localized: {
             en: "ACME Corp"
@@ -110,9 +110,9 @@ test('issuing selected offers', async (t) => {
           regionCode: "CA"
         }
       },
-      offerId: HYPER_ID,
-      offerCreationDate: ISO_DATE,
-      offerExpirationDate: ISO_DATE
+      offerId: UUID_FORMAT,
+      offerCreationDate: ISO_DATE_FORMAT,
+      offerExpirationDate: ISO_DATE_FORMAT
     }]
   })
 })
@@ -123,7 +123,7 @@ test('issuing all offers', async (t) => {
 
   const payload = {
     vendorUserId: "1",
-    vendorOrganizationId: hyperid()
+    vendorOrganizationId: uuidv4()
   };
 
   const res = await app.inject({
@@ -142,7 +142,7 @@ test('issuing all offers', async (t) => {
       issuer: { vendorOrganizationId: payload.vendorOrganizationId },
       credentialSubject: {
         vendorUserId: payload.vendorUserId,
-        company: DID,
+        company: DID_FORMAT,
         companyName: {
           localized: {
             en: "ACME Corp"
@@ -162,16 +162,16 @@ test('issuing all offers', async (t) => {
           regionCode: "CA"
         }
       },
-      offerId: HYPER_ID,
-      offerCreationDate: ISO_DATE,
-      offerExpirationDate: ISO_DATE
+      offerId: UUID_FORMAT,
+      offerCreationDate: ISO_DATE_FORMAT,
+      offerExpirationDate: ISO_DATE_FORMAT
     },
       {
         type: ["PastEmploymentPosition"],
         issuer: { vendorOrganizationId: payload.vendorOrganizationId },
         credentialSubject: {
           vendorUserId: payload.vendorUserId,
-          company: DID,
+          company: DID_FORMAT,
           companyName: {
             localized: {
               en: "ACME Corp"
@@ -195,9 +195,9 @@ test('issuing all offers', async (t) => {
             regionCode: "CA"
           }
         },
-        offerId: HYPER_ID,
-        offerCreationDate: ISO_DATE,
-        offerExpirationDate: ISO_DATE
+        offerId: UUID_FORMAT,
+        offerCreationDate: ISO_DATE_FORMAT,
+        offerExpirationDate: ISO_DATE_FORMAT
       }]
   })
 })

@@ -1,4 +1,4 @@
-const hyperid = require('hyperid')({urlSafe: true});
+const { v4: uuidv4 } = require('uuid');
 const _ = require("lodash/fp");
 
 const educationStore = {};
@@ -7,7 +7,7 @@ const applicantCredentialIdIndex = {};
 
 function educationMapper(velocityEducation, checks) {
   return {
-    id: hyperid(),
+    id: uuidv4(),
     applicantId: velocityEducation.applicantId,
     schoolName: velocityEducation.credentialSubject.schoolName.localized.en,
     degree: `${velocityEducation.credentialSubject.degreeName.localized.en} ${velocityEducation.credentialSubject.program.localized.en}`,
@@ -18,7 +18,7 @@ function educationMapper(velocityEducation, checks) {
 
 function employmentMapper(velocityEmployment, checks) {
   const currentEmploymentRecord = {
-    id: hyperid(),
+    id: uuidv4(),
     applicantId: velocityEmployment.applicantId,
     companyName: velocityEmployment.credentialSubject.companyName.localized.en,
     position: velocityEmployment.credentialSubject.title.localized.en,
