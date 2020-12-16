@@ -1,25 +1,27 @@
-const {findOrCreateApplicant, findApplicantById} = require("../applicants/applicant-repo");
-const {saveApplicantCredentials} = require("../applicants/credential-repo");
+const {first} = require('lodash/fp');
+const {findOrCreateApplicant} = require('../applicants/applicant-repo');
+const {saveApplicantCredentials} = require('../applicants/credential-repo');
 
 module.exports = function (fastify, opts, next) {
   fastify.post(
-    '/find-or-create-applicant',
+    '/receive-checked-credentials',
     async (req) => {
-      const idAndContact = req.body;
-      const applicant = findOrCreateApplicant(idAndContact.email, {
-        givenName: idAndContact.firstName,
-        surname: idAndContact.lastName,
-        email: idAndContact.email
-      });
-      return {vendorApplicantId: applicant.id};
-    }
-  );
+      const credentials = req.body.credentials;
 
-  fastify.post(
-    '/add-credentials-to-applicant',
-    async (req) => {
-      const applicant = findApplicantById(req.body.vendorApplicantId);
-      const credentials = saveApplicantCredentials(applicant, req.body.credentials);
+      // Extract the idAndContact credential and then find or create the applicant
+      const idAndContact = credentials.find(c => c.type.includes('IdentityAndContact'));
+      const applicant = findOrCreateApplicant(
+        first(idAndContact.emails),
+        {
+          givenName: idAndContact.firstName,
+          surname: idAndContact.lastName,
+          emails: idAndContact.emails
+        }
+      );
+
+      // Extract the career credential and save them against the applicant
+      const careerCredentials = credentials.find(c => !c.type.includes('IdentityAndContact'));
+      saveApplicantCredentials(applicant, careerCredentials);
       return {numProcessed: credentials.length};
     }
   );
