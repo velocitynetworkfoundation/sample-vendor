@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "tap test/**/*.test.js",
+    "testone": "TAP_ONLY=1 tap test/**/*.test.js",
     "start": "fastify start -l info app.js",
     "dev": "fastify start -w -l info -P app.js"
   },

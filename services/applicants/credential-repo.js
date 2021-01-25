@@ -17,6 +17,7 @@ function educationMapper(velocityEducation, checks) {
 }
 
 function employmentMapper(velocityEmployment, checks) {
+  console.error(velocityEmployment);
   const currentEmploymentRecord = {
     id: uuidv4(),
     applicantId: velocityEmployment.applicantId,
