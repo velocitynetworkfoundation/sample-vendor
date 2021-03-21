@@ -1,14 +1,26 @@
 # Sample Vendor
 
-Is an example implementation for a Credential Agent for Luther, using fastify v3.
+Is an example implementation of a Vendor Gateway API for a Credential Agent that for the Luther release, using fastify v3.
 
 ## Getting started
-1. (for security reasons) Update the secrets in the .env file
-2. Run the following
+1. Run the following
 ```sh
+$ docker-compose pull # get the latest images
 $ docker-compose up
+```
+
+**DO NOT RUN IN PRODUCTION WITHOUT CHANGING SECRET VALUES**
+
+### Using npm
+```sh
 $ npm install
 $ npm start
+```
+
+### Using yarn
+```sh
+$ yarn
+$ yarn start
 ```
 
 ## Issuing endpoints
