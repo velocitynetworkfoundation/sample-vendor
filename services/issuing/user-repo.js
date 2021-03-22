@@ -1,5 +1,4 @@
 const _ = require("lodash/fp")
-const hyperid = require("hyperid")({urlSafe: true});
 
 const userStore = Object.freeze({
   "1": {
