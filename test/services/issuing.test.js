@@ -87,7 +87,6 @@ test('issuing selected offers', async (t) => {
   t.match(JSON.parse(res.payload), {
     offers: [{
       type: ["CurrentEmploymentPosition"],
-      issuer: { vendorOrganizationId: payload.vendorOrganizationId },
       credentialSubject: {
         vendorUserId: payload.vendorUserId,
         company: DID_FORMAT,
@@ -139,7 +138,6 @@ test('issuing all offers', async (t) => {
   t.match(JSON.parse(res.payload), {
     offers: [{
       type: ["CurrentEmploymentPosition"],
-      issuer: { vendorOrganizationId: payload.vendorOrganizationId },
       credentialSubject: {
         vendorUserId: payload.vendorUserId,
         company: DID_FORMAT,
@@ -168,7 +166,6 @@ test('issuing all offers', async (t) => {
     },
       {
         type: ["PastEmploymentPosition"],
-        issuer: { vendorOrganizationId: payload.vendorOrganizationId },
         credentialSubject: {
           vendorUserId: payload.vendorUserId,
           company: DID_FORMAT,
