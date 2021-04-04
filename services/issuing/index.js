@@ -17,11 +17,10 @@ function identify(idDocument) {
   return null;
 }
 
-function generateOffer({type, exchangeId, vendorOrganizationId, vendorUserId}, content) {
+function generateOffer({type, exchangeId, vendorUserId}, content) {
   const now = new Date();
   return {
     type: [type],
-    issuer: {vendorOrganizationId},
     credentialSubject: {
       vendorUserId,
       ...content
