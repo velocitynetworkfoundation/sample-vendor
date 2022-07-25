@@ -1,6 +1,7 @@
 # Sample Vendor
 
-Is an example implementation of a Vendor Gateway API for a Credential Agent that for the Luther release, using fastify v3.
+A sample implementation of the [Vendor Gateway API](https://docs.velocitynetwork.foundation/docs/vendor-gateway-api)
+for a Credential Agent, using fastify v3.
 
 ## Getting started
 1. Run the following
